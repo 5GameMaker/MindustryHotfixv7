@@ -812,11 +812,7 @@ public class LExecutor {
             LogicAI ai = null;
 
             if (base instanceof Ranged r && (exec.privileged || r.team() == exec.team) &&
-                    (base instanceof Building || (ai = UnitControlI.checkLogicAI(exec, base)) != null)) { // must be a
-                                                                                                          // building or
-                                                                                                          // a
-                                                                                                          // controllable
-                                                                                                          // unit
+                    ((base instanceof Building b && (!b.block.privileged || exec.privileged)) || (ai = UnitControlI.checkLogicAI(exec, base)) != null)) { // must be a building or a controllable unit
                 float range = r.range();
 
                 Healthc targeted;
@@ -1117,7 +1113,7 @@ public class LExecutor {
         @Override
         public void run(LExecutor exec) {
 
-            if (exec.building(target) instanceof MessageBuild d && (d.team == exec.team || exec.privileged)) {
+            if (exec.building(target) instanceof MessageBuild d && (exec.privileged || (d.team == exec.team && !d.block..privileged))) {
 
                 d.message.setLength(0);
                 d.message.append(exec.textBuffer, 0, Math.min(exec.textBuffer.length(), maxTextBuffer));
