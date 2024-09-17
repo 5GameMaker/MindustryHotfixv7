@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Trigger BE build
-      if: ${{ github.repository == 'Anuken/Mindustry' }}
+      if: ${{ github.repository == '5GameMaker/MindustryHotfixv7' }}
       run: |
         git clone --depth=1 --branch=master https://github.com/5GameMaker/MindustryHotfixBuilds ../MindustryBuilds
         cd ../MindustryBuilds
@@ -28,7 +28,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     - name: Update bundles
-      if: ${{ github.repository == 'Anuken/Mindustry' }}
+      if: ${{ github.repository == '5GameMaker/MindustryHotfixv7' }}
       run: |
         ./gradlew updateBundles
 
