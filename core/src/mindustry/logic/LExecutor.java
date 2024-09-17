@@ -1089,8 +1089,7 @@ public class LExecutor {
         }
 
         public static String toString(Object obj) {
-            return obj == null ? "null" : obj instanceof String s ? s : obj == Blocks.stoneWall ? "solid" : // special
-                                                                                                            // alias
+            return obj == null ? "null" : obj instanceof String s ? s : obj == Blocks.stoneWall ? "solid" : // special alias
                     obj instanceof MappableContent content ? content.name
                             : obj instanceof Content ? "[content]"
                                     : obj instanceof Building build ? build.block.name
