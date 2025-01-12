@@ -772,7 +772,7 @@ public class NetServer implements ApplicationListener{
             }
             case trace -> {
                 PlayerInfo stats = netServer.admins.getInfo(other.uuid());
-                TraceInfo info = new TraceInfo(other.con.address, other.uuid(), other.con.modclient, other.con.mobile, stats.timesJoined, stats.timesKicked, stats.ips.toArray(String.class), stats.names.toArray(String.class));
+                TraceInfo info = new TraceInfo(other.con.address, String.valueOf(other.id()), other.con.modclient, other.con.mobile, stats.timesJoined, stats.timesKicked, stats.ips.toArray(String.class), stats.names.toArray(String.class));
                 if(player.con != null){
                     Call.traceInfo(player.con, other, info);
                 }else{

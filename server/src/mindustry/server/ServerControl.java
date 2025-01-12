@@ -1027,7 +1027,6 @@ public class ServerControl implements ApplicationListener{
         CommandResponse response = handler.handleMessage(line);
 
         if(response.type == ResponseType.unknownCommand){
-
             int minDst = 0;
             Command closest = null;
 
@@ -1050,6 +1049,7 @@ public class ServerControl implements ApplicationListener{
         }else if(response.type == ResponseType.manyArguments){
             err("Too many command arguments. Usage: " + response.command.text + " " + response.command.paramText);
         }else if(response.type == ResponseType.valid){
+            Events.fire(new mindustry.hotfix.Events.ConsoleCommandExecuted(response, handler));
             suggested = null;
         }
     }

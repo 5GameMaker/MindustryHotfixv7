@@ -270,13 +270,14 @@ public class NetClient implements ApplicationListener{
             //this is required so other clients get the correct name even if they don't know who's sending it yet
             Call.sendMessage(netServer.chatFormatter.format(player, message), message, player);
         }else{
-
             //a command was sent, now get the output
             if(response.type != ResponseType.valid){
                 String text = netServer.invalidHandler.handle(player, response);
                 if(text != null){
                     player.sendMessage(text);
                 }
+            }else{
+                Events.fire(new mindustry.hotfix.Events.CommandExecuted(player, response, netServer.clientCommands));
             }
         }
     }
