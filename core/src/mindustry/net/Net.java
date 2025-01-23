@@ -7,6 +7,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.hotfix.ConnectionStage;
 import mindustry.net.Packets.*;
 import mindustry.net.Streamable.*;
 import net.jpountz.lz4.*;
@@ -303,6 +304,10 @@ public class Net{
      */
     public void handleServerReceived(NetConnection connection, Packet object){
         object.handled();
+        if (!connection.stage().between(object.getRequiredStage(), object.getMaxStage())) {
+            debug("Cancelled packet " + object.getClass().getSimpleName() + " from '" + connection.address + "' (stage=" + connection.stage() + ") stage mismatch.");
+            return;
+        }
 
         try{
             //handle object normally

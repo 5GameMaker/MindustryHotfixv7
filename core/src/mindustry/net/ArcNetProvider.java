@@ -12,6 +12,7 @@ import arc.util.Log.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
+import mindustry.hotfix.ConnectionStage;
 import mindustry.net.Administration.*;
 import mindustry.net.Net.*;
 import mindustry.net.Packets.*;

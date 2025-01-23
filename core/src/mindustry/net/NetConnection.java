@@ -5,6 +5,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
+import mindustry.hotfix.ConnectionStage;
 import mindustry.net.Packets.*;
 
 import java.io.*;
@@ -39,6 +40,14 @@ public abstract class NetConnection{
 
     public NetConnection(String address){
         this.address = address;
+    }
+
+    /** Get player connection stage. */
+    public ConnectionStage stage(){
+        if(hasDisconnected)return ConnectionStage.Disconnected;
+        if(hasConnected)return ConnectionStage.Play;
+        if(hasBegunConnecting)return ConnectionStage.BeganConnecting;
+        return ConnectionStage.PreConnect;
     }
 
     /** Kick with the standard kick reason. */

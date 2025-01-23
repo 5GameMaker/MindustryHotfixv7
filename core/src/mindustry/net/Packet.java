@@ -1,6 +1,7 @@
 package mindustry.net;
 
 import arc.util.io.*;
+import mindustry.hotfix.ConnectionStage;
 
 import java.io.*;
 
@@ -30,6 +31,19 @@ public abstract class Packet{
 
     public int getPriority(){
         return priorityNormal;
+    }
+
+    public ConnectionStage getRequiredStage() {
+        if(this.getClass() == mindustry.gen.ConnectConfirmCallPacket.class) return ConnectionStage.BeganConnecting;
+        if(this.getClass() == mindustry.gen.ClientSnapshotCallPacket.class) return ConnectionStage.BeganConnecting;
+        if(this.getClass() == mindustry.gen.PingCallPacket.class) return ConnectionStage.BeganConnecting;
+        return ConnectionStage.Play;
+    }
+
+    public ConnectionStage getMaxStage() {
+        if(this.getClass() == mindustry.gen.ClientSnapshotCallPacket.class) return ConnectionStage.Play;
+        if(this.getClass() == mindustry.gen.PingCallPacket.class) return ConnectionStage.Play;
+        return getRequiredStage();
     }
 
     public void handleClient(){}

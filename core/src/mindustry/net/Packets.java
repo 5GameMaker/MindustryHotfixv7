@@ -5,6 +5,7 @@ import arc.struct.*;
 import arc.util.io.*;
 import arc.util.serialization.*;
 import mindustry.core.*;
+import mindustry.hotfix.ConnectionStage;
 import mindustry.io.*;
 
 import java.util.zip.*;
@@ -49,6 +50,11 @@ public class Packets{
         public int getPriority(){
             return priorityHigh;
         }
+
+        @Override
+        public ConnectionStage getRequiredStage() {
+            return ConnectionStage.PreConnect;
+        }
     }
 
     /** Generic client disconnection event. */
@@ -58,6 +64,16 @@ public class Packets{
         @Override
         public int getPriority(){
             return priorityHigh;
+        }
+
+        @Override
+        public ConnectionStage getRequiredStage() {
+            return ConnectionStage.BeganConnecting;
+        }
+
+        @Override
+        public ConnectionStage getMaxStage() {
+            return ConnectionStage.Play;
         }
     }
 
@@ -152,6 +168,11 @@ public class Packets{
             for(int i = 0; i < totalMods; i++){
                 mods.add(TypeIO.readString(buffer));
             }
+        }
+
+        @Override
+        public ConnectionStage getRequiredStage() {
+            return ConnectionStage.PreConnect;
         }
     }
 }
