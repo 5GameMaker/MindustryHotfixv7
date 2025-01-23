@@ -41,6 +41,7 @@ public abstract class Packet{
     }
 
     public ConnectionStage getMaxStage() {
+        if(this.getClass() == mindustry.gen.ConnectConfirmCallPacket.class) return ConnectionStage.Play;
         if(this.getClass() == mindustry.gen.ClientSnapshotCallPacket.class) return ConnectionStage.Play;
         if(this.getClass() == mindustry.gen.PingCallPacket.class) return ConnectionStage.Play;
         return getRequiredStage();
