@@ -3,6 +3,7 @@ package mindustry.world.blocks.storage;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -105,6 +106,9 @@ public class StorageBlock extends Block{
             //only add prev items when core is not linked
             if(linkedCore == null){
                 for(Building other : previous){
+                    if(other instanceof StorageBuild && ((StorageBuild) other).linkedCore != null){
+                        continue;
+                    }
                     if(other.items != null && other.items != items){
                         items.add(other.items);
                     }
