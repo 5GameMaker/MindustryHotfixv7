@@ -1,8 +1,10 @@
 package mindustry.world.blocks.storage;
 
+import arc.Core;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -10,6 +12,8 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
+
+import java.io.IOException;
 
 import static mindustry.Vars.*;
 
@@ -105,8 +109,11 @@ public class StorageBlock extends Block{
         public void overwrote(Seq<Building> previous){
             //only add prev items when core is not linked
             if(linkedCore == null){
+                //client did not like my patch :<
+                var synchronizeClient = false;
                 for(Building other : previous){
                     if(other instanceof StorageBuild && ((StorageBuild) other).linkedCore != null){
+                        synchronizeClient = true;
                         continue;
                     }
                     if(other.items != null && other.items != items){
@@ -115,6 +122,21 @@ public class StorageBlock extends Block{
                 }
 
                 items.each((i, a) -> items.set(i, Math.min(a, itemCapacity)));
+                if(synchronizeClient && net.server()){
+                    Core.app.post(() -> {
+                        try {
+                            netServer.syncStream.reset();
+                            netServer.dataStream.writeInt(pos());
+                            netServer.dataStream.writeShort(block.id);
+                            writeAll(Writes.get(netServer.dataStream));
+                            netServer.dataStream.close();
+                            Call.blockSnapshot((short) 1, netServer.syncStream.toByteArray());
+                            netServer.syncStream.reset();
+                        } catch (IOException e) {
+                            Log.err(e);
+                        }
+                    });
+                }
             }
         }
 

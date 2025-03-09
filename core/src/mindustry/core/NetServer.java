@@ -112,9 +112,9 @@ public class NetServer implements ApplicationListener{
     private Writes outputBuffer = new Writes(new DataOutputStream(writeBuffer));
 
     /** Stream for writing player sync data to. */
-    private ReusableByteOutStream syncStream = new ReusableByteOutStream();
+    public ReusableByteOutStream syncStream = new ReusableByteOutStream();
     /** Data stream for writing player sync data to. */
-    private DataOutputStream dataStream = new DataOutputStream(syncStream);
+    public DataOutputStream dataStream = new DataOutputStream(syncStream);
     /** Packet handlers for custom types of messages. */
     private ObjectMap<String, Seq<Cons2<Player, String>>> customPacketHandlers = new ObjectMap<>();
 
