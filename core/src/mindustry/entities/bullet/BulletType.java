@@ -299,6 +299,19 @@ public class BulletType extends Content implements Cloneable{
     /** Color of light emitted by this bullet. */
     public Color lightColor = Pal.powerLight;
 
+    /**
+     * Hotfix Core API! Whether pierce should ignore building damage multiplier.
+     * <p>
+     *     In vanilla Mindustry, building damage multiplier is not applied to
+     *     pierce.
+     * </p>
+     * <p>
+     *     As of now, Hotfix Core patches this by default, but that may change
+     *     in future for mod compatibility reasons.
+     * </p>
+     */
+    public boolean hfPierceIgnoresBuildingDamageMultiplier = false;
+
     public BulletType(float speed, float damage){
         this.speed = speed;
         this.damage = damage;
