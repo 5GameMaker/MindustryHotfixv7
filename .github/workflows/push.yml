@@ -27,16 +27,16 @@ jobs:
         java-version: 17
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
-    - name: Update bundles
-      if: ${{ github.repository == '5GameMaker/MindustryHotfixv7' }}
-      run: |
-        ./gradlew updateBundles
+    #- name: Update bundles
+    #  if: ${{ github.repository == '5GameMaker/MindustryHotfixv7' }}
+    #  run: |
+    #    ./gradlew updateBundles
 
-        if [ -n "$(git status --porcelain)" ]; then
-          git add core/assets/bundles/*
-          git commit -m "Automatic bundle update"
-          git push
-        fi
+    #    if [ -n "$(git status --porcelain)" ]; then
+    #      git add core/assets/bundles/*
+    #      git commit -m "Automatic bundle update"
+    #      git push
+    #    fi
     # - name: Update JITpack repo
     #   if: ${{ github.repository == 'Anuken/Mindustry' }}
     #   run: |

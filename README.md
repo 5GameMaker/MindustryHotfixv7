@@ -24,7 +24,7 @@ First, make sure you have [JDK 16-17](https://adoptium.net/archive.html?variant=
 
 ### Server
 
-_Running:_ `./gradlew server:run`  
+_Running:_ `./gradlew server:run`
 _Building:_ `./gradlew server:dist`  
 _Sprite Packing:_ `./gradlew tools:pack`
 
