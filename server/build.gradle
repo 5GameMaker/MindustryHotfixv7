@@ -1,24 +1,12 @@
+import java.io.File
+
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "mindustry.server.ServerLauncher"
-project.ext.assetsDir = new File("../core/assets")
+project.ext.assetsDir = new File("$rootDir/core/assets")
 
 ext.getServerFolder = {
     return "../deploy/${appName}-server-${getVersionString()}"
-}
-
-task run(dependsOn: classes, type: JavaExec){
-    mainClass = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-    if(project.hasProperty("appArgs")){
-        args Eval.me(appArgs)
-    }
-    if(project.hasProperty("jvmArgs")){
-        jvmArgs((List<String>)Eval.me(project.getProperties()["jvmArgs"]))
-    }
 }
 
 task debug(dependsOn: classes, type: JavaExec){
@@ -33,19 +21,23 @@ task debug(dependsOn: classes, type: JavaExec){
 task dist(type: Jar, dependsOn: configurations.runtimeClasspath){
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }}
-    from files(project.assetsDir)
-    exclude("sprites/**")
-    exclude("music/**")
-    exclude("sounds/**")
-    exclude("fonts/**")
-    exclude("bundles/**")
-    exclude("cubemaps/**")
-    exclude("cursors/**")
-    exclude("shaders/**")
-    exclude("icons/icon.icns")
-    exclude("icons/icon.ico")
-    exclude("icons/icon_64.png")
+    from configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
+    from files("${project.ext.assetsDir}/sprites/block_colors.png") {
+        rename("block_colors.png", "sprites/block_colors.png")
+    }
+    from files(project.ext.assetsDir) {
+        exclude("sprites/**")
+        exclude("music/**")
+        exclude("sounds/**")
+        exclude("fonts/**")
+        exclude("bundles/**")
+        exclude("cubemaps/**")
+        exclude("cursors/**")
+        exclude("shaders/**")
+        exclude("icons/icon.icns")
+        exclude("icons/icon.ico")
+        exclude("icons/icon_64.png")
+    }
 
     manifest{
         attributes 'Main-Class': project.mainClassName
@@ -58,6 +50,24 @@ task dzip(type: Zip){
     destinationDirectory = file("../deploy/")
 
     finalizedBy 'cleanup'
+}
+
+task run(dependsOn: dist, type: JavaExec){
+    mainClass = project.mainClassName
+    classpath = files(dist.archiveFile)
+    standardInput = System.in
+    workingDir = "${rootDir}/run"
+    ignoreExitValue = true
+    if(project.hasProperty("appArgs")){
+        args Eval.me(appArgs)
+    }
+    if(project.hasProperty("jvmArgs")){
+        jvmArgs((List<String>)Eval.me(project.getProperties()["jvmArgs"]))
+    }
+
+    doFirst {
+        workingDir.mkdirs()
+    }
 }
 
 task cleanup{
@@ -88,3 +98,7 @@ task deploy{
 }
 
 dist.dependsOn classes
+//run.dependsOn ":tools:pack"
+//dist.dependsOn ":tools:pack"
+
+println "Jar should be in ${dist.archiveFile.get()}"

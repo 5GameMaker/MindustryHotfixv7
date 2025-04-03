@@ -1,3 +1,5 @@
+import java.io.File
+
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "mindustry.desktop.DesktopLauncher"
@@ -12,7 +14,7 @@ task run(dependsOn: classes, type: JavaExec){
     mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
-    workingDir = project.assetsDir
+    workingDir = "${rootDir}/run"
     ignoreExitValue = true
 
     if(System.getProperty("os.name").toLowerCase().contains("mac")){
@@ -35,6 +37,10 @@ task run(dependsOn: classes, type: JavaExec){
 
     if(args.contains("debug")){
         mainClass = "mindustry.debug.DebugLauncher"
+    }
+
+    doFirst {
+        workingDir.mkdirs()
     }
 }
 

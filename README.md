@@ -1,9 +1,11 @@
 ![Logo](core/assets-raw/sprites/ui/logo.png)
 
-[![Build Status](https://github.com/Anuken/Mindustry/workflows/Tests/badge.svg?event=push)](https://github.com/Anuken/Mindustry/actions)
+[![Build Status](https://github.com/5GameMaker/MindustryHotfixv7/workflows/Tests/badge.svg?event=push)](https://github.com/5GameMaker/MindustryHotfixv7/actions)
 [![Mindustry Discord](https://img.shields.io/discord/391020510269669376.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord&color=17cf48)](https://discord.gg/mindustry)  
 
-The automation tower defense RTS, written in Java.
+A maintainance fork fixing issues *including mixtech ones*.
+
+> Mindustry Hotfix includes patches that you may not want, see [PATCHES_NOTICE](PATCHES_NOTICE.md).
 
 _[Trello Board](https://trello.com/b/aE2tcUwF/mindustry-40-plans)_  
 _[Wiki](https://mindustrygame.github.io/wiki)_  
@@ -20,7 +22,17 @@ Bleeding-edge builds are generated automatically for every commit. You can see t
 If you'd rather compile on your own, follow these instructions.
 First, make sure you have [JDK 16-17](https://adoptium.net/archive.html?variant=openjdk17&jvmVariant=hotspot) installed. **Other JDK versions will not work.** Open a terminal in the Mindustry directory and run the following commands:
 
+### Server
+
+_Running:_ `./gradlew server:run`  
+_Building:_ `./gradlew server:dist`  
+_Sprite Packing:_ `./gradlew tools:pack`
+
+`tools:pack` must have be ran at least once before `server:run`/`server:dist` to generate necessary files.
+
 ### Windows
+
+> Not supported!
 
 _Running:_ `gradlew desktop:run`  
 _Building:_ `gradlew desktop:dist`  
@@ -28,15 +40,15 @@ _Sprite Packing:_ `gradlew tools:pack`
 
 ### Linux/Mac OS
 
+> Not supported!
+
 _Running:_ `./gradlew desktop:run`  
 _Building:_ `./gradlew desktop:dist`  
 _Sprite Packing:_ `./gradlew tools:pack`
 
-### Server
-
-Server builds are bundled with each released build (in Releases). If you'd rather compile on your own, replace 'desktop' with 'server', e.g. `gradlew server:dist`.
-
 ### Android
+
+> Not supported!
 
 1. Install the Android SDK [here.](https://developer.android.com/studio#command-tools) Make sure you're downloading the "Command line tools only", as Android Studio is not required.
 2. In the unzipped Android SDK folder, find the cmdline-tools directory. Then create a folder inside of it called `latest` and put all of its contents into the newly created folder.
