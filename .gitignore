@@ -45,6 +45,7 @@ packr-out/
 config/
 *.gif
 /tests/out
+/run
 
 /core/assets/basepartnames
 version.properties
