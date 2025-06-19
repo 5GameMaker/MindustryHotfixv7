@@ -238,24 +238,24 @@ configure(subprojects - project(":annotations")){
     }
 }
 
-project(":desktop"){
-    apply plugin: "java"
-
-    compileJava.options.fork = true
-
-    dependencies{
-        implementation project(":core")
-        implementation arcModule("extensions:discord")
-        implementation arcModule("natives:natives-desktop")
-        implementation arcModule("natives:natives-freetype-desktop")
-
-        if(debugged()) implementation project(":debug")
-
-        implementation "com.github.Anuken:steamworks4j:$steamworksVersion"
-
-        implementation arcModule("backends:backend-sdl")
-    }
-}
+//project(":desktop"){
+//    apply plugin: "java"
+//
+//    compileJava.options.fork = true
+//
+//    dependencies{
+//        implementation project(":core")
+//        implementation arcModule("extensions:discord")
+//        implementation arcModule("natives:natives-desktop")
+//        implementation arcModule("natives:natives-freetype-desktop")
+//
+//        if(debugged()) implementation project(":debug")
+//
+//        implementation "com.github.Anuken:steamworks4j:$steamworksVersion"
+//
+//        implementation arcModule("backends:backend-sdl")
+//    }
+//}
 
 project(":core"){
     apply plugin: "java-library"
@@ -343,10 +343,10 @@ project(":core"){
 
     afterEvaluate{
         task mergedJavadoc(type: Javadoc){
-            def blacklist = [project(":ios"), project(":desktop"), project(":server"), project(":annotations")]
-            if(findProject(":android") != null){
-                blacklist += project(":android")
-            }
+            def blacklist = [project(":server"), project(":annotations")] // project(":ios"), project(":desktop")
+            //if(findProject(":android") != null){
+            //    blacklist += project(":android")
+            //}
 
             source rootProject.subprojects.collect{ project ->
                 if(!blacklist.contains(project) && project.hasProperty("sourceSets")){
@@ -460,13 +460,13 @@ task deployAll{
     }
 
     dependsOn cleanDeployOutput
-    dependsOn "desktop:packrLinux64"
-    dependsOn "desktop:packrWindows64"
-    dependsOn "desktop:packrWindows32"
-    dependsOn "desktop:packrMacOS"
+    //dependsOn "desktop:packrLinux64"
+    //dependsOn "desktop:packrWindows64"
+    //dependsOn "desktop:packrWindows32"
+    //dependsOn "desktop:packrMacOS"
     if(versionModifier != "steam"){
         dependsOn "server:deploy"
-        dependsOn "android:deploy"
+        //dependsOn "android:deploy"
     }
 }
 
