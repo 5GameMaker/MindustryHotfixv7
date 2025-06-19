@@ -2,7 +2,8 @@ if(JavaVersion.current().ordinal() < JavaVersion.VERSION_16.ordinal()){
     throw new Exception("!!! YOU MUST USE JAVA 16 OR ABOVE TO COMPILE AND RUN MINDUSTRY !!! Read the README. Your version: ${System.properties["java.version"]}")
 }
 
-include 'desktop', 'core', 'server', 'ios', 'annotations', 'tools', 'tests'
+include 'core', 'server', 'annotations', 'tools', 'tests'
+//include 'ios', 'desktop'
 
 def use = { ... names ->
     for(String name : names){
@@ -11,6 +12,7 @@ def use = { ... names ->
     }
 }
 
+/*
 def hasSdk = System.getenv("ANDROID_HOME") != null
 
 if(new File(settingsDir, 'local.properties').exists()){
@@ -70,3 +72,4 @@ if(!hasProperty("release")){
 }else{
     println("Not including local repositories.")
 }
+*/
