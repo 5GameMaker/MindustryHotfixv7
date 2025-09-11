@@ -509,9 +509,9 @@ public class ControlPathfinder{
 
         PathfindQueue frontier = new PathfindQueue();
         //node index -> node it came from
-        IntIntMap cameFrom = new IntIntMap();
+        IntIntMap cameFrom = new IntIntMap(51, 0.2f);
         //node index -> total cost
-        IntFloatMap costs = new IntFloatMap();
+        IntFloatMap costs = new IntFloatMap(51, 0.2f);
 
         int start, goal;
 
@@ -551,79 +551,91 @@ public class ControlPathfinder{
             long ns = Time.nanos();
             int counter = 0;
 
-            while(frontier.size > 0){
-                int current = frontier.poll();
+            try{
+                while (frontier.size > 0) {
+                    int current = frontier.poll();
 
-                if(current == goal){
-                    foundEnd = true;
-                    break;
-                }
+                    if (current == goal) {
+                        foundEnd = true;
+                        break;
+                    }
 
-                int cx = current % wwidth, cy = current / wwidth;
+                    int cx = current % wwidth, cy = current / wwidth;
 
-                for(Point2 point : Geometry.d4){
-                    int newx = cx + point.x, newy = cy + point.y;
-                    int next = newx + wwidth * newy;
+                    for (Point2 point : Geometry.d4) {
+                        int newx = cx + point.x, newy = cy + point.y;
+                        int next = newx + wwidth * newy;
 
-                    if(newx >= wwidth || newy >= wheight || newx < 0 || newy < 0) continue;
+                        if (newx >= wwidth || newy >= wheight || newx < 0 || newy < 0) continue;
 
-                    //in fallback mode, enemy walls are passable
-                    if(tcost(team, cost, next) == impassable) continue;
+                        //in fallback mode, enemy walls are passable
+                        if (tcost(team, cost, next) == impassable) continue;
 
-                    float add = tileCost(team, cost, current, next);
-                    float currentCost = costs.get(current);
+                        float add = tileCost(team, cost, current, next);
+                        float currentCost = costs.get(current);
 
-                    if(add < 0) continue;
+                        if (add < 0) continue;
 
-                    //the cost can include an impassable enemy wall, so cap the cost if so and add the base cost instead
-                    //essentially this means that any path with enemy walls will only count the walls once, preventing strange behavior like avoiding based on wall count
-                    float newCost = currentCost >= wallImpassableCap && add >= wallImpassableCap ? currentCost + add - wallImpassableCap : currentCost + add;
+                        //the cost can include an impassable enemy wall, so cap the cost if so and add the base cost instead
+                        //essentially this means that any path with enemy walls will only count the walls once, preventing strange behavior like avoiding based on wall count
+                        float newCost = currentCost >= wallImpassableCap && add >= wallImpassableCap ? currentCost + add - wallImpassableCap : currentCost + add;
 
-                    //a cost of 0 means "not set"
-                    if(!costs.containsKey(next) || newCost < costs.get(next)){
-                        costs.put(next, newCost);
-                        float priority = newCost + heuristic(next, goal);
-                        frontier.add(next, priority);
-                        cameFrom.put(next, current);
+                        //a cost of 0 means "not set"
+                        if (!costs.containsKey(next) || newCost < costs.get(next)) {
+                            costs.put(next, newCost);
+                            float priority = newCost + heuristic(next, goal);
+                            frontier.add(next, priority);
+                            cameFrom.put(next, current);
+                        }
+                    }
+
+                    //only check every N iterations to prevent nanoTime spam (slow)
+                    if ((counter++) >= 100) {
+                        counter = 0;
+
+                        //exit when out of time.
+                        if (Time.timeSinceNanos(ns) > maxUpdateNs) {
+                            return;
+                        }
                     }
                 }
 
-                //only check every N iterations to prevent nanoTime spam (slow)
-                if((counter ++) >= 100){
-                    counter = 0;
+                lastTime = Time.millis();
+                raycastTimer = 9999f;
+                result.clear();
 
-                    //exit when out of time.
-                    if(Time.timeSinceNanos(ns) > maxUpdateNs){
-                        return;
+                pathIndex = 0;
+                rayPathIndex = -1;
+
+                if (foundEnd) {
+                    int cur = goal;
+                    while (cur != start) {
+                        result.add(cur);
+                        cur = cameFrom.get(cur);
                     }
-                }
-            }
 
-            lastTime = Time.millis();
-            raycastTimer = 9999f;
-            result.clear();
+                    result.reverse();
 
-            pathIndex = 0;
-            rayPathIndex = -1;
-
-            if(foundEnd){
-                int cur = goal;
-                while(cur != start){
-                    result.add(cur);
-                    cur = cameFrom.get(cur);
+                    smoothPath();
                 }
 
-                result.reverse();
+                //don't keep this around in memory, better to dump entirely - using clear() keeps around massive arrays for paths
+                frontier = new PathfindQueue();
+                cameFrom = new IntIntMap();
+                costs = new IntFloatMap();
 
-                smoothPath();
+                done = true;
+            }catch(OutOfMemoryError | ArrayIndexOutOfBoundsException ignored){
+                // I'm as clueless as you are or at least once were.
+
+                lastTime = Time.millis();
+                raycastTimer = 9999f;
+                result.clear();
+
+                frontier = new PathfindQueue();
+                cameFrom = new IntIntMap();
+                costs = new IntFloatMap();
             }
-
-            //don't keep this around in memory, better to dump entirely - using clear() keeps around massive arrays for paths
-            frontier = new PathfindQueue();
-            cameFrom = new IntIntMap();
-            costs = new IntFloatMap();
-
-            done = true;
         }
 
         void smoothPath(){
