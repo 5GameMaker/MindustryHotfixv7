@@ -7,6 +7,7 @@ import mindustry.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
+import mindustry.hotfix.Debug;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.net.Net;
@@ -60,6 +61,8 @@ public class ServerLauncher implements ApplicationListener {
         content.createModContent();
         content.init();
         content.loadColors();
+
+        Debug.load();
 
         if (mods.hasContentErrors()) {
             err("Error occurred loading mod content:");

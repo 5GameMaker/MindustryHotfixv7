@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.pooling.Pools;
 import mindustry.*;
 import mindustry.ai.types.*;
 import mindustry.annotations.Annotations.*;
@@ -827,6 +828,11 @@ public class BulletType extends Content implements Cloneable{
     @Remote(called = Loc.server, unreliable = true)
     public static void createBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl){
         if(type == null) return;
-        type.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null);
+        var bullet = type.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null);
+        var pool = Pools.get(mindustry.hotfix.Events.BulletCreated.class, mindustry.hotfix.Events.BulletCreated::new);
+        var event = pool.obtain();
+        event.bullet = bullet;
+        Events.fire(event);
+        pool.free(event);
     }
 }

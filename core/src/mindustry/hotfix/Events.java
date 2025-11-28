@@ -1,8 +1,12 @@
 package mindustry.hotfix;
 
+import mindustry.gen.Bullet;
+
 import arc.util.CommandHandler;
 import arc.util.CommandHandler.CommandResponse;
 import mindustry.gen.*;
+import mindustry.world.Tile;
+import mindustry.world.blocks.environment.Floor;
 
 /**
  * Events specific to MindustryHotfix. Only depend on this API if you're not planning
@@ -37,5 +41,26 @@ public class Events {
             this.response = response;
             this.handler = handler;
         }
+    }
+
+    /**
+     * Called when a tile changes its floor. Do not cache or use with a timer.
+     * Do not modify any tiles inside listener code.
+     * */
+    public static class TileFloorChangeEvent {
+        public Tile tile;
+        public Floor previous, floor;
+
+        public TileFloorChangeEvent set(Tile tile, Floor previous, Floor floor) {
+            this.tile = tile;
+            this.previous = previous;
+            this.floor = floor;
+            return this;
+        }
+    }
+
+    /** A bullet has been created. Do not cache or use with a timer. */
+    public static class BulletCreated {
+        public Bullet bullet;
     }
 }

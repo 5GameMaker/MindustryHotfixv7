@@ -12,6 +12,7 @@ import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.hotfix.Debug;
 import mindustry.world.*;
 
 import static mindustry.Vars.*;
@@ -625,7 +626,7 @@ public class ControlPathfinder{
                 costs = new IntFloatMap();
 
                 done = true;
-            }catch(OutOfMemoryError | ArrayIndexOutOfBoundsException ignored){
+            }catch(OutOfMemoryError | ArrayIndexOutOfBoundsException error){
                 // I'm as clueless as you are or at least once were.
 
                 lastTime = Time.millis();
@@ -635,6 +636,8 @@ public class ControlPathfinder{
                 frontier = new PathfindQueue();
                 cameFrom = new IntIntMap();
                 costs = new IntFloatMap();
+
+                Debug.report(error);
             }
         }
 

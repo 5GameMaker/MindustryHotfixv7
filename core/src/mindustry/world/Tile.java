@@ -23,6 +23,7 @@ import static mindustry.Vars.*;
 public class Tile implements Position, QuadTreeObject, Displayable{
     private static final TileChangeEvent tileChange = new TileChangeEvent();
     private static final TilePreChangeEvent preChange = new TilePreChangeEvent();
+    private static final mindustry.hotfix.Events.TileFloorChangeEvent floorChange = new mindustry.hotfix.Events.TileFloorChangeEvent();
     private static final ObjectSet<Building> tileSet = new ObjectSet<>();
 
     /** Extra data for very specific blocks. */
@@ -282,11 +283,16 @@ public class Tile implements Position, QuadTreeObject, Displayable{
 
     /** This resets the overlay! */
     public void setFloor(Floor type){
+        var prev = this.floor;
         this.floor = type;
         this.overlay = (Floor)Blocks.air;
 
         if(!headless && !world.isGenerating() && !isEditorTile()){
             renderer.blocks.removeFloorIndex(this);
+        }
+
+        if(!world.isGenerating()){
+            Events.fire(floorChange.set(this, prev, type));
         }
 
         recache();
