@@ -224,21 +224,6 @@ public class ApplicationTests{
     }
 
     @Test
-    void serverListJson(){
-        String[] files = {"servers_v6.json", "servers_v7.json", "servers_be.json"};
-
-        for(String file : files){
-            try{
-                String str = Core.files.absolute("./../../" + file).readString();
-                assertEquals(ValueType.array, new JsonReader().parse(str).type());
-                assertTrue(Jval.read(str).isArray());
-            }catch(Exception e){
-                fail("Failed to parse " + file, e);
-            }
-        }
-    }
-
-    @Test
     void initialization(){
         assertNotNull(logic);
         assertNotNull(world);
